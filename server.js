@@ -45,10 +45,8 @@ const start = () => {
       removeDepartment();
     }else if(response.prompt === "Add role"){
       addRole();
-      start();
     }else if(response.prompt === "Remove role"){
       removeRole();
-      start();
     }
     });
 };
@@ -183,6 +181,73 @@ const removeDepartment = () => {
           )
         console.log(`${chosenDept.departmentName} has been removed from departments!`);
         start();
+    })
+  })
+}
+
+const addRole = () => {
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "title",
+      message: "What is the title of this role?"
+    },
+    {
+      type: "input",
+      name: "salary",
+      message: "What is this role's salary?"
+    },
+    {
+      type: "input",
+      name: "department_id",
+      message: "What is the department id?"
+    }
+  ]).then(function(response){
+    connection.query(
+      "INSERT INTO role SET ?",
+      {
+        title: response.title,
+        salary: response.salary,
+        department_id: response.department_id
+      },
+      function(err){
+        if(err) throw err;
+        console.log("You have added a new role!");
+        start();
+      }
+    )
+  })
+}
+
+const removeRole = () => {
+  connection.query("SELECT * FROM role", function(err, results){
+    if(err) throw err;
+    inquirer.prompt([
+      {
+        type: "list",
+        name: "removeRole",
+        message: "Which role would you like to remove?",
+        choices: function(){
+          let choiceArray = [];
+          for (let i = 0; i < results.length; i++) {
+            choiceArray.push(results[i].title);
+          }
+          return choiceArray;
+        }
+      }
+    ])
+    .then(function(answer){
+      let chosenRole;
+      for (let i = 0; i < results.length; i++) {
+        if(results[i].title === answer.removeRole){
+          chosenRole = results[i];
+        }
+      }
+      connection.query(
+        `DELETE FROM role WHERE title='${chosenRole.title}'`
+      )
+      console.log(`${chosenRole.title} has been removed from roles!`);
+      start();
     })
   })
 }
