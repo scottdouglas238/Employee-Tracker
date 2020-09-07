@@ -153,20 +153,23 @@ const addDepartment = () => {
 };
 
 const removeDepartment = () => {
-  inquirer.prompt([
-    {
-      type: "list",
-      name: "removeDept",
-      message: "What department would you like to remove?",
-      choices: function() {
-        let choiceArray = [];
-        for(let i = 0; i < results.length; i++){
-          choiceArray.push(results[i].first_name + " " + results[i].last_name);
+  connection.query("SELECT * FROM department", function(err, results){
+    if(err) throw err;
+    inquirer.prompt([
+      {
+        type: "list",
+        name: "removeDept",
+        message: "which  department would you like to remove?",
+        choices: function(){
+          let choiceArray = [];
+          for (let i = 0; i < results.length; i++) {
+            choiceArray.push(results[i].departmentName);
+          }
+          return choiceArray;
         }
-        return choiceArray;
-     }
-    }
-  ])
+      }
+    ])
+  })
 }
 
 const viewAllEmployees = () => {
