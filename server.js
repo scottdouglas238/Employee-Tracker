@@ -66,8 +66,8 @@ const addemployeePrompt = () => {
       {
         type: "list",
         name: "role",
-        message: "What is the employee's role?",
-        choices: ["Sales Lead", "Salesperson", "Software Engineer", "Account Manager", "Accountant"]
+        message: "What is the employee's role id?",
+        choices: ["1", "2", "3", "4", "5", "6", "7", "8"]
       },
       {
         type: "list",
@@ -82,8 +82,8 @@ const addemployeePrompt = () => {
         {
           first_name: response.firstName,
           last_name: response.lastName,
-          // title: response.role,
-          // manager: response.manager,
+          role_id: response.role,
+          manager_id: response.manager,
         },
         function(err){
           if (err) throw err;
@@ -253,7 +253,7 @@ const removeRole = () => {
 }
 
 const viewAllEmployees = () => {
-   connection.query("SELECT * FROM employee", function(err, res){
+   connection.query("SELECT ", function(err, res){
      if (err) throw err;
      console.log("------------------------------------------------------");
      console.table(res);
@@ -270,7 +270,7 @@ const viewDepartments = () => {
 }
 
 const viewRoles = () => {
-  connection.query("SELECT * FROM role", function(err, res){
+  connection.query("SELECT role.title, role.salary, department.departmentName FROM role INNER JOIN department ON role.department_id=department.id", function(err, res){
     if(err) throw err;
     console.log("-------------------------------------------------------");
     console.table(res);
