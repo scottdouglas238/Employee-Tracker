@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const { response } = require("express");
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -19,7 +20,7 @@ const start = () => {
       {
         name: "prompt",
         type: "list",
-        message: "What would you like to do?",
+        message: "What would you like to do?",  
         choices: ["View all employees", "View all departments", "View all roles", "Add employee", 
         "Remove employee", "Add department", "Remove department", "Add role", "Remove role"],
       }
@@ -38,13 +39,10 @@ const start = () => {
       addemployeePrompt();
     }else if(response.prompt === "Remove employee"){
       removeEmployee();
-      start();
     }else if(response.prompt === "Add department"){
       addDepartment();
-      start();
     }else if(response.prompt === "Remove department"){
       removeDepartment();
-      start();
     }else if(response.prompt === "Add role"){
       addRole();
       start();
@@ -53,8 +51,8 @@ const start = () => {
       start();
     }
     });
-
 };
+
 const addemployeePrompt = () => {
     inquirer.prompt([
       {
@@ -97,6 +95,79 @@ const addemployeePrompt = () => {
       )
     })
 };
+
+const removeEmployee = () => {
+  connection.query("SELECT * FROM employee", function(err, results){
+    if(err) throw err;
+    inquirer.prompt([
+      {
+        type: "list",
+        name: "remove",
+        message: "Which employee would you like to remove?",
+        choices: function(){
+           let choiceArray = [];
+           for(let i = 0; i < results.length; i++){
+             choiceArray.push(results[i].first_name + " " + results[i].last_name);
+           }
+           return choiceArray;
+        }
+      }
+     ])
+     .then(function(answer){
+      let chosenName;
+      for(let i = 0; i < results.length; i++){
+        if(results[i].first_name + " " + results[i].last_name === answer.remove){
+          chosenName = results[i];
+        }
+      }
+      connection.query(
+        `DELETE FROM employee WHERE first_name='${chosenName.first_name}'`
+      )
+        console.log(`(${chosenName.first_name} ${chosenName.last_name} has been removed from employees)`)
+        start();
+    
+    })
+  })
+}
+
+const addDepartment = () => {
+   inquirer.prompt([
+     {
+       type: "input",
+       name: "department",
+       message: "What department would you like to add?"
+     }
+   ]).then(function(response){
+    connection.query(
+      "INSERT INTO department SET ?",
+      {
+        departmentName: response.department,
+      },
+      function(err){
+        if (err) throw err;
+        console.log("You successfully added a new department!")
+        start();
+      }
+    )
+   })
+};
+
+const removeDepartment = () => {
+  inquirer.prompt([
+    {
+      type: "list",
+      name: "removeDept",
+      message: "What department would you like to remove?",
+      choices: function() {
+        let choiceArray = [];
+        for(let i = 0; i < results.length; i++){
+          choiceArray.push(results[i].first_name + " " + results[i].last_name);
+        }
+        return choiceArray;
+     }
+    }
+  ])
+}
 
 const viewAllEmployees = () => {
    connection.query("SELECT * FROM employee", function(err, res){
