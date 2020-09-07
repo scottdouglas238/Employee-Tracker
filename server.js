@@ -253,7 +253,7 @@ const removeRole = () => {
 }
 
 const viewAllEmployees = () => {
-   connection.query("SELECT ", function(err, res){
+   connection.query("SELECT employee.first_name, employee.last_name, role.title, role.salary, employee.manager_id FROM employee INNER JOIN role ON employee.role_id=role.id", function(err, res){
      if (err) throw err;
      console.log("------------------------------------------------------");
      console.table(res);
