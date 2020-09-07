@@ -159,7 +159,7 @@ const removeDepartment = () => {
       {
         type: "list",
         name: "removeDept",
-        message: "which  department would you like to remove?",
+        message: "which department would you like to remove?",
         choices: function(){
           let choiceArray = [];
           for (let i = 0; i < results.length; i++) {
@@ -169,6 +169,21 @@ const removeDepartment = () => {
         }
       }
     ])
+    .then(function(answer){
+      console.log(answer)
+      let chosenDept;
+      for (let i = 0; i < results.length; i++) {
+        if(results[i].departmentName === answer.removeDept){
+          chosenDept = results[i];
+          console.log(chosenDept.departmentName);
+        }
+      }
+      connection.query(
+        `DELETE FROM department WHERE departmentName='${chosenDept.departmentName}'`
+          )
+        console.log(`${chosenDept.departmentName} has been removed from departments!`);
+        start();
+    })
   })
 }
 
