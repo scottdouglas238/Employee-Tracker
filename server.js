@@ -15,6 +15,7 @@ const connection = mysql.createConnection({
     start();
   });
 
+
 const start = () => {
     inquirer.prompt([
       {
@@ -52,6 +53,8 @@ const start = () => {
 };
 
 const addemployeePrompt = () => {
+  connection.query("SELECT role.title, role.salary, department.departmentName FROM role INNER JOIN department ON role.department_id=department.id", function(err, results){
+    if(err) throw err;
     inquirer.prompt([
       {
         type: "input",
@@ -66,8 +69,14 @@ const addemployeePrompt = () => {
       {
         type: "list",
         name: "role",
-        message: "What is the employee's role id?",
-        choices: ["1", "2", "3", "4", "5", "6", "7", "8"]
+        message: "What is the employee's role?",
+        choices: function(){
+          let choiceArray = [];
+          for (let i = 0; i < results.length; i++) {
+            choiceArray.push(results[i].title);
+          }
+          return choiceArray;
+        }
       },
       {
         type: "list",
@@ -76,7 +85,30 @@ const addemployeePrompt = () => {
         choices: ["Matt", "Mindy", "Sarah", "Christina"]
       }
     ]).then(function(response){
-      console.log(response)
+      if(response.role === "Cook"){
+        response.role = "1";
+      }
+      if(response.role === "Server"){
+        response.role = "2";
+      }
+      if(response.role === "Bartender"){
+        response.role = "3";
+      }
+      if(response.role === "Accountant"){
+        response.role = "4";
+      }
+      if(response.role === "Pianist"){
+        response.role = "5";
+      }
+      if(response.role === "Singer"){
+        response.role = "6";
+      }
+      if(response.role === "Software Programer"){
+        response.role = "7";
+      }
+      if(response.role === "Maintenance Worker"){
+        response.role = "8";
+      }
       connection.query(
         "INSERT INTO employee SET ?",
         {
@@ -90,12 +122,13 @@ const addemployeePrompt = () => {
           console.log("You updated employees.")
           start();
         }
-      )
-    })
-};
-
-const removeEmployee = () => {
-  connection.query("SELECT * FROM employee", function(err, results){
+        )
+      })
+  })
+    };
+    
+    const removeEmployee = () => {
+      connection.query("SELECT * FROM employee", function(err, results){
     if(err) throw err;
     inquirer.prompt([
       {
