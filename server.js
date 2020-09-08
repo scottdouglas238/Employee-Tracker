@@ -23,7 +23,7 @@ const start = () => {
         type: "list",
         message: "What would you like to do?",  
         choices: ["View all employees", "View all departments", "View all roles", "Add employee", 
-        "Remove employee", "Add department", "Remove department", "Add role", "Remove role"],
+        "Remove employee", "Add department", "Remove department", "Add role", "Remove role", "Update role"],
       }
     ])
     .then(function(response){
@@ -48,6 +48,8 @@ const start = () => {
       addRole();
     }else if(response.prompt === "Remove role"){
       removeRole();
+    }else if(response.prompt ==="Update role"){
+      updateRole();
     }
     });
 };
@@ -282,6 +284,37 @@ const removeRole = () => {
       console.log(`${chosenRole.title} has been removed from roles!`);
       start();
     })
+  })
+}
+
+const updateRole = () => {
+  connection.query("SELECT * FROM role", function(err, results){
+    if(err) throw err;
+    inquirer.prompt([
+      {
+        type: "list",
+        name: "updateR",
+        message: "Which part of the role would you like to update?",
+        choices: function(){
+          let choiceArray = [];
+          for (let i = 0; i < results.length; i++) {
+          choiceArray.push(results[i].title)  
+          }
+          return choiceArray;
+        }
+      }
+    ])
+    .then(function(answer){
+      let chosenRole;
+      for (let i = 0; i < results.length; i++) {
+        if(results[i].title === answer.updateR){
+          chosenRole = results[i];
+        }
+      }
+    })
+    // .then(function(answer){
+
+    // })
   })
 }
 
