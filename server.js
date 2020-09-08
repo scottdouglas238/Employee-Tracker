@@ -319,6 +319,8 @@ const updateRole = () => {
             }
           ]).then(function(response){
             if(response.rolePart === `id - Currently: ${chosenRole.id}`){
+              rolePart();
+              function rolePart(){
               inquirer.prompt([
                 {
                   type: "input",
@@ -329,12 +331,16 @@ const updateRole = () => {
                 connection.query(
                   `UPDATE role SET id=${response.idChange} WHERE id=${chosenRole.id}`
                 )
+              }).then(function(){
+                console.log("You successfully updated employee id!");
+                start();
               })
-              console.log("You updated the ID!");
-              start();
-            }
+              
+            }}
             //-----------------------------------------------------------------------------------
             if(response.rolePart === `title - Currently: ${chosenRole.title}`){
+              titlePart();
+              function titlePart(){
               inquirer.prompt([
                 {
                   type: "input",
@@ -343,14 +349,18 @@ const updateRole = () => {
                 }
               ]).then(function(response){
                 connection.query(
-                  `UPDATE role SET title=${response.titleChange} WHERE title=${chosenRole.title}`
+                  `UPDATE role SET title="${response.titleChange}" WHERE title="${chosenRole.title}"`
                 )
+              }).then(function(){
+                console.log("You successfully updated the title name!");
+                start();
               })
-              console.log("You updated the title!");
-              start();
-            }
+            
+            }}
             //-------------------------------------------------------------------------------------
             if(response.rolePart === `salary - Currently: ${chosenRole.salary}`){
+              salaryPart();
+              function salaryPart(){
               inquirer.prompt([
                 {
                   type: "input",
@@ -361,12 +371,16 @@ const updateRole = () => {
                 connection.query(
                   `UPDATE role SET salary=${response.salaryChange} WHERE salary=${chosenRole.salary}`
                 )
+              }).then(function(){
+                console.log("You successfully updated this role's salary!");
+                start();
               })
-              console.log("You updated the salary!");
-              start();
-            }
+              
+            }}
             //---------------------------------------------------------------------------------------
             if(response.rolePart === `department id - Currently: ${chosenRole.department_id}`){
+              deptIdPart();
+              function deptIdPart(){
               inquirer.prompt([
                 {
                   type: "input",
@@ -375,12 +389,14 @@ const updateRole = () => {
                 }
               ]).then(function(response){
                 connection.query(
-                  `UPDATE role SET department_id=${response.deptIdChange} WHERE department_id=${chosenRole.department_id}`
+                  `UPDATE role SET department_id=${response.deptIdChange} WHERE department_id=${chosenRole.department_id} AND id=${chosenRole.id}`
                 )
+              }).then(function(){
+                console.log("You successfully updated the department id!");
+                start();
               })
-              console.log("You updated the department id!");
-              start();
-            }
+             
+            }}
           })
         }
       }
