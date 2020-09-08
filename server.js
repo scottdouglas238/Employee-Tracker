@@ -309,12 +309,75 @@ const updateRole = () => {
       for (let i = 0; i < results.length; i++) {
         if(results[i].title === answer.updateR){
           chosenRole = results[i];
+          console.log(chosenRole);
+          inquirer.prompt([
+            {
+              type: "list",
+              name: "rolePart",
+              message: "What part of the role would you like to update?",
+              choices: [`id - Currently: ${chosenRole.id}`, `title - Currently: ${chosenRole.title}`, `salary - Currently: ${chosenRole.salary}`, `department id - Currently: ${chosenRole.department_id}`]  
+            }
+          ]).then(function(response){
+            if(response.rolePart === `id - Currently: ${chosenRole.id}`){
+              inquirer.prompt([
+                {
+                  type: "input",
+                  name: "idChange",
+                  message: "What would you like to change the id to be?"
+                }
+              ]).then(function(response){
+                connection.query(
+                  `UPDATE role SET id=${response.idChange} WHERE id=${chosenRole.id}`
+                )
+              })
+            }
+            //-----------------------------------------------------------------------------------
+            if(response.rolePart === `title - Currently: ${chosenRole.title}`){
+              inquirer.prompt([
+                {
+                  type: "input",
+                  name: "titleChange",
+                  message: "What would you like to change the title to be?"
+                }
+              ]).then(function(response){
+                connection.query(
+                  `UPDATE role SET title=${response.titleChange} WHERE title=${chosenRole.title}`
+                )
+              })
+            }
+            //-------------------------------------------------------------------------------------
+            if(response.rolePart === `salary - Currently: ${chosenRole.salary}`){
+              inquirer.prompt([
+                {
+                  type: "input",
+                  name: "salaryChange",
+                  message: "What would you like to change the salary to be?"
+                }
+              ]).then(function(response){
+                connection.query(
+                  `UPDATE role SET salary=${response.salaryChange} WHERE salary=${chosenRole.salary}`
+                )
+              })
+            }
+            //---------------------------------------------------------------------------------------
+            if(response.rolePart === `department id - Currently: ${chosenRole.department_id}`){
+              inquirer.prompt([
+                {
+                  type: "input",
+                  name: "deptIdChange",
+                  message: "What would you like to change the department id to be?"
+                }
+              ]).then(function(response){
+                connection.query(
+                  `UPDATE role SET department_id=${response.deptIdChange} WHERE department_id=${chosenRole.department_id}`
+                )
+              })
+            }
+          })
         }
       }
-    })
-    // .then(function(answer){
 
-    // })
+    })    
   })
 }
 
