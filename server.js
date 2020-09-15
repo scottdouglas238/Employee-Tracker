@@ -23,7 +23,7 @@ const start = () => {
         type: "list",
         message: "What would you like to do?",  
         choices: ["View all employees", "View all departments", "View all roles", "Add employee", 
-        "Remove employee", "Add department", "Remove department", "Add role", "Remove role", "Update role"],
+        "Remove employee", "Add department", "Remove department", "Add role", "Remove role", "Update role", "Quit"],
       }
     ])
     .then(function(response){
@@ -50,6 +50,8 @@ const start = () => {
       removeRole();
     }else if(response.prompt ==="Update role"){
       updateRole();
+    }else if(response.prompt ==="Quit"){
+      connection.end();
     }
     });
 };
@@ -309,7 +311,6 @@ const updateRole = () => {
       for (let i = 0; i < results.length; i++) {
         if(results[i].title === answer.updateR){
           chosenRole = results[i];
-          console.log(chosenRole);
           inquirer.prompt([
             {
               type: "list",
